@@ -1,16 +1,14 @@
 ---
 title: "Erste Schritte in R"
+subtitle: "Düsseldorf (Tagesstudium)"
 author: "Norman Markgraf"
-date: "26 März 2019"
+date: "Sommersemester 2019/20"
 output: word_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
 library(mosaic)
-library(ggformula)
-
 ```
 
 
@@ -18,56 +16,81 @@ library(ggformula)
 
 Dieses Dokument muss die Endlung ".Rmd" haben!
 
-Zu Beginn einer jeden Veranstaltung muss "MOSAIC" geladen werden:
+Zu Beginn einer jeden Vorlesung müssen wir zuerst Mosaic starten. Das geht wie folgt:
 
 ```{r}
 library(mosaic)
 ```
 
 
-Wir nutzen den internen Datensatz "Alcohol". Er wird wie folgt geladen:
+In R sind interne Datensätze vorhanden, u.a. der Datensatz "Alcohol", den man aber erst sieht, wenn man hin freischaltet:
 
 ```{r}
-data("Alcohol")
-```
-
-Schauen wir uns mal die ersten und letzten Einträge des Datensatz an:
-
-```{r}
-head(Alcohol)  # Die ersten Zeilen (und ja, ich bin ein Kommentar!)
-tail(Alcohol)  # Die letzten Zeilen
+data(Alcohol)
 ```
 
 
-Wir wollen uns die Daten aus Deutschland ansehen:
-Dazu müssen wir den Datensatz "filtrieren"
+Möchte mensch die ersten Einträge im Datensatz sehen, so geht das mit:
+
+```{r}
+head(Alcohol)  # Die ersten Beobchtungen
+```
+
+
+Die letzten Einträge in dem Datensatz können wir mit dem folgenden Befehl erhalten:
+
+```{r}
+tail(Alcohol)  # Die letzten Beobachtungen
+```
+
+
+
+Wir interessieren uns zuerst nur für die Werte aus Deutschland. Wir "filtrieren" dazu den Datensatz wie folgt:
 
 ```{r}
 Alcohol.Ger <- Alcohol %>% filter(country == "Germany")
 ```
 
-
-Wir interessieren uns nun nur für das Jahr 2008 und nur für die Spalten Country und Alcohol:
+Falls wir uns nur für das Jahr 2008 interessieren könnten wir wie folgt filtern:
 
 ```{r}
-Alcohol.2008 <- Alcohol %>%
-  filter(year == 2008) %>%
-  select(country, alcohol)
+Alcohol.2008 <- Alcohol %>% filter(year == 2008) 
+```
+
+Wir können also einzelne Beobachtungen "filtern"!
+
+Falls wir uns nur noch für das Jahr 2008 interessieren sind alle anderen Spalten als die Spalten der Länder und der Alkoholmengen für uns uninteressant. Also erzeugen wir und eine neue Tabelle "Alcohol.2008" in der nur das nötigste enthalten ist.
+Dazu "filtern" wir das Jahr 2008 herraus und "selektieren" die Spalten country und alcohol:
+
+```{r}
+Alcohol.2008 <- Alcohol %>% # Ich bin nur ein Kommentar!!! ;-)
+  filter(year == 2008) %>%  # Nur das Jahr 2008 ist von Interesse 
+  select(country, alcohol)  # Nur Land und Alkoholverbrauch!
 ```
 
 
-Wie kann man die Ränge hinzufügen?
+Wir sortieren einmal die Daten nach dem Alkoholverbrauch, mit dem Befehl "arrange()":
+
+```{r}
+Alcohol.2008.sort <- Alcohol.2008 %>%
+  arrange(alcohol)
+```
+
+
+Vielleicht interessiert doch eher der "Rang", das können wir wie folgt hinzufügen. Dazu "mutieren" wir den Datensatz mit dem Befehl `mutate()` und erzeugen so eine neue Spalte:
 
 ```{r}
 Alcohol.2008.rank <- Alcohol.2008 %>%
   mutate(rank = rank(alcohol))        # Neue Spalte "rank" mit dem Rang hinzufügen!
-  
 ```
 
-Auf welchem Platz steht Deutschland?
+Und auf welchem Rang steht nun Deutschland?
+
 ```{r}
-Alcohol.2008.rank %>% filter(country == "Germany")
+Alcohol.2008.rank %>% 
+  filter(country == "Germany")
 ```
+
 
 Wie sieht das mit Deutschland, Österreich, Schweiz, Spanien, Griechenland und Groß-Britanien im Vergleich aus?
 
@@ -94,7 +117,6 @@ Und was hat R an Daten erkannt und wie?
 
 ```{r}
 inspect(Alcohol)
-
 ```
 
 
