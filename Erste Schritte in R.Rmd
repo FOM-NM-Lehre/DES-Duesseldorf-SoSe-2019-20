@@ -1,0 +1,106 @@
+---
+title: "Erste Schritte in R"
+author: "Norman Markgraf"
+date: "26 März 2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(mosaic)
+library(ggformula)
+
+```
+
+
+## Vorlesung vom 26.03.2019
+
+Dieses Dokument muss die Endlung ".Rmd" haben!
+
+Zu Beginn einer jeden Veranstaltung muss "MOSAIC" geladen werden:
+
+```{r}
+library(mosaic)
+```
+
+
+Wir nutzen den internen Datensatz "Alcohol". Er wird wie folgt geladen:
+
+```{r}
+data("Alcohol")
+```
+
+Schauen wir uns mal die ersten und letzten Einträge des Datensatz an:
+
+```{r}
+head(Alcohol)  # Die ersten Zeilen (und ja, ich bin ein Kommentar!)
+tail(Alcohol)  # Die letzten Zeilen
+```
+
+
+Wir wollen uns die Daten aus Deutschland ansehen:
+Dazu müssen wir den Datensatz "filtrieren"
+
+```{r}
+Alcohol.Ger <- Alcohol %>% filter(country == "Germany")
+```
+
+
+Wir interessieren uns nun nur für das Jahr 2008 und nur für die Spalten Country und Alcohol:
+
+```{r}
+Alcohol.2008 <- Alcohol %>%
+  filter(year == 2008) %>%
+  select(country, alcohol)
+```
+
+
+Wie kann man die Ränge hinzufügen?
+
+```{r}
+Alcohol.2008.rank <- Alcohol.2008 %>%
+  mutate(rank = rank(alcohol))        # Neue Spalte "rank" mit dem Rang hinzufügen!
+  
+```
+
+Auf welchem Platz steht Deutschland?
+```{r}
+Alcohol.2008.rank %>% filter(country == "Germany")
+```
+
+Wie sieht das mit Deutschland, Österreich, Schweiz, Spanien, Griechenland und Groß-Britanien im Vergleich aus?
+
+```{r}
+Alcohol.2008.rank %>% filter(
+  country == "Germany" |
+  country == "Austria" |
+  country == "Switzerland" |
+  country == "Spain" |
+  country == "Greece" |
+  country == "United Kingdom"
+)
+```
+
+
+Wie speichert R das intern ab?
+
+```{r}
+str(Alcohol)
+```
+
+
+Und was hat R an Daten erkannt und wie?
+
+```{r}
+inspect(Alcohol)
+
+```
+
+
+
+
+
+
+
+
