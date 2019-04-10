@@ -120,6 +120,107 @@ inspect(Alcohol)
 ```
 
 
+## Vorlesung vom 09.04.2019
+
+Zuerst laden wir das Paket "mosaic":
+
+```{r}
+library(mosaic)
+```
+
+Und dann laden wir die "tipping" Daten:
+
+```{r}
+download.file("https://goo.gl/whKjnl", destfile = "tips.csv")
+```
+Danach laden wir den Datensatz in den Speicher unter dem Namen "tips"!
+
+```{r}
+tips <- read.csv2("tips.csv")
+```
+
+Wir müssen noch gridExtra laden:
+
+```{r}
+library(gridExtra)
+```
+
+Ein Blick auf die Daten im Datensatz "tips":
+
+```{r}
+str(tips)
+```
+
+
+Ein erstes Diagramm in R:
+
+```{r}
+plot1 <- gf_bar( ~ sex, data=tips)
+plot2 <- gf_barh( ~ sex, data=tips)
+grid.arrange(plot1, plot2, nrow=1)
+```
+
+
+```{r}
+prop( ~ sex, # prop liefter den Anteilswert
+      success = "Female", # success = "Female" bedeuten nur der Frauen!
+      data=tips) # Daten aus dem Datensatz tips
+```
+
+Die *absolute* Häufigkeit:
+
+```{r}
+tally( ~ sex, data=tips)
+```
+
+Die *relative* Häufigkeit:
+
+```{r}
+tally( ~ sex,
+       format = "proportion",
+       data=tips)
+```
+
+Wenn wir wissen wollen, ob das Verhalten sowohl bei Lunch als auch bei Dinner das selbe ist, dann müssen wir die Daten "gruppieren":
+
+```{r}
+gf_bar( ~ sex | time,
+        data=tips)
+```
+
+
+Wie sehen die Zahlen aus?
+
+Die *absoluten* Häufigkeiten:
+
+```{r}
+tally( ~ sex | time, data=tips)
+```
+
+Die *relativen* Häufigkeiten:
+
+```{r}
+tally( ~ sex | time, format="proportion", data=tips)
+```
+
+Raucher je Wochentag;
+Lösung A:
+
+```{r}
+tally( ~ smoker | day, format = "proportion", data=tips)
+```
+
+Lösung B
+```{r}
+tally( ~ day | smoker, format = "proportion", data=tips)
+```
+
+
+### Übung 31
+
+```{r}
+gf_histogram( ~ tip, bins= 10, data=tips)
+```
 
 
 
