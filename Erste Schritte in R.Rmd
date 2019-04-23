@@ -226,4 +226,50 @@ gf_histogram( ~ tip, bins= 10, data=tips)
 
 
 
+## Vorlesung vom 23.04.2019
+
+### Offene Übung 54
+
+Mosaic noch einmal laden und  
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+```{r}
+gf_histogram( ~ total_bill | smoker, data=tips) 
+gf_boxplot( total_bill ~ smoker, data=tips)
+favstats( total_bill ~ smoker , data=tips)
+```
+
+
+
+### Offene Übung 55
+
+```{r}
+gf_point(tip ~ total_bill | smoker, data=tips)
+tips %>% 
+    group_by(smoker) %>%
+    summarise(cor(tip ~ total_bill))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+Übung 65
+
+
+```{r}
+xpnorm(75, mean=60, sd=10) # Gabi
+xpnorm(275, mean=250, sd=25) # Klaus
+```
+
 
