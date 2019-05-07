@@ -273,3 +273,124 @@ xpnorm(275, mean=250, sd=25) # Klaus
 ```
 
 
+## Der Münzwurf als Simulation
+
+```{r}
+set.seed(2009)
+
+muenzvrtlg <- do(100) * rflip(n=10)
+gf_bar( ~ heads, data=muenzvrtlg) %>%
+  gf_labs(title = "Simulierter Münzwurf von n=10 Münzen mit 100 Wiederholungen")
+muenzvrtlg <- do(1000) * rflip(n=10)
+gf_bar( ~ heads, data=muenzvrtlg)  %>%
+  gf_labs(title = "Simulierter Münzwurf von n=10 Münzen mit 1.000 Wiederholungen")
+muenzvrtlg <- do(10000) * rflip(n=10)
+gf_bar( ~ heads, data=muenzvrtlg) %>%
+  gf_labs(title = "Simulierter Münzwurf von n=10 Münzen mit 10.000 Wiederholungen")
+
+``` 
+
+
+## Vorlesung vom 06.05.2019
+
+Wir laden am Anfang das Paket mosaic und die Tipping-Daten:
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+Frauenanteil der Rechnungszahler*innen:
+
+Kennzahlen:
+```{r}
+tally( ~ sex, format="proportion", data=tips)
+```
+
+Graphische Darstellung:
+```{r}
+gf_percents( ~ sex, data=tips)
+```
+
+Wir simulieren nun die Nullverteilung, also die Verteilung die dadurch entsteht, dass wir die $H_0$ als WAHR annehmen:
+
+```{r}
+set.seed(2009) # Zufallszahlengenerator auf einen Startwert setzen!
+
+Nullvtlg <- do(10000+0) *
+  rflip(n= nrow(tips))
+
+gf_histogram( ~  prop, data=Nullvtlg)
+```
+
+
+Wie berechnen wir nun den Anteilswert / p-Wert?
+
+```{r}
+propdach <- prop( ~ sex, data=tips, success = "Female")
+propdach
+```
+
+Quantile für extreme Werte in der Verteilung unter der $H_0: \pi = 0.5$ also bei 50%:
+
+```{r}
+quantile( ~ prop, data=Nullvtlg, probs=c(0.025, 0.975))
+```
+
+Da der Wert `r propdach` nicht im Intervall von `r quantile( ~ prop, data=Nullvtlg, probs=c(0.025, 0.975))` liegt, ist es **kein** üblicher Wert. (Die $H_0$ wackelt!)
+
+Im klassischen Test sieht das wie folgt aus:
+
+```{r}
+binom.test( ~ sex, # Variablbe die wir untersuchen wollen.
+            p = 0.5, # hypothetische Wert der p_0 also der 50% Frauenanteil
+            success = "Female", # Welcher Anteil soll bestimmt werden? 
+            alternative = "two.sided", # ein UNGERICHTETER Test!!
+            data=tips
+            )
+```
+
+
+## Bootstrap-Verteilung für den Rechnungsmittelwert
+
+
+```{r}
+Bootvltg <- do(10000) *
+  mean( ~ total_bill, data=resample(tips))
+gf_histogram( ~ mean, data=Bootvltg)
+```
+Das 95%-Bootstrap-KI:
+```{r}
+quantile( ~ mean, probs=c(0.0 25, 0.975), data=Bootvltg)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
