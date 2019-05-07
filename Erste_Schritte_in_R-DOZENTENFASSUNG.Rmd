@@ -1,0 +1,440 @@
+---
+title: "Erste Schritte in R"
+author: "Norman Markgraf"
+date: "Sommersemester 2019/20"
+output:
+  pdf_document: default
+  word_document: default
+subtitle: Düsseldorf (Tagesstudium) - Dozentenfassung!
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mosaic)
+```
+
+
+## Vorlesung vom 26.03.2019
+
+Dieses Dokument muss die Endlung ".Rmd" haben!
+
+Zu Beginn einer jeden Vorlesung müssen wir zuerst Mosaic starten. Das geht wie folgt:
+
+```{r}
+library(mosaic)
+```
+
+
+In R sind interne Datensätze vorhanden, u.a. der Datensatz "Alcohol", den man aber erst sieht, wenn man hin freischaltet:
+
+```{r}
+data(Alcohol)
+```
+
+
+Möchte mensch die ersten Einträge im Datensatz sehen, so geht das mit:
+
+```{r}
+head(Alcohol)  # Die ersten Beobchtungen
+```
+
+
+Die letzten Einträge in dem Datensatz können wir mit dem folgenden Befehl erhalten:
+
+```{r}
+tail(Alcohol)  # Die letzten Beobachtungen
+```
+
+
+
+Wir interessieren uns zuerst nur für die Werte aus Deutschland. Wir "filtrieren" dazu den Datensatz wie folgt:
+
+```{r}
+Alcohol.Ger <- Alcohol %>% filter(country == "Germany")
+```
+
+Falls wir uns nur für das Jahr 2008 interessieren könnten wir wie folgt filtern:
+
+```{r}
+Alcohol.2008 <- Alcohol %>% filter(year == 2008) 
+```
+
+Wir können also einzelne Beobachtungen "filtern"!
+
+Falls wir uns nur noch für das Jahr 2008 interessieren sind alle anderen Spalten als die Spalten der Länder und der Alkoholmengen für uns uninteressant. Also erzeugen wir und eine neue Tabelle "Alcohol.2008" in der nur das nötigste enthalten ist.
+Dazu "filtern" wir das Jahr 2008 herraus und "selektieren" die Spalten country und alcohol:
+
+```{r}
+Alcohol.2008 <- Alcohol %>% # Ich bin nur ein Kommentar!!! ;-)
+  filter(year == 2008) %>%  # Nur das Jahr 2008 ist von Interesse 
+  select(country, alcohol)  # Nur Land und Alkoholverbrauch!
+```
+
+
+Wir sortieren einmal die Daten nach dem Alkoholverbrauch, mit dem Befehl "arrange()":
+
+```{r}
+Alcohol.2008.sort <- Alcohol.2008 %>%
+  arrange(alcohol)
+```
+
+
+Vielleicht interessiert doch eher der "Rang", das können wir wie folgt hinzufügen. Dazu "mutieren" wir den Datensatz mit dem Befehl `mutate()` und erzeugen so eine neue Spalte:
+
+```{r}
+Alcohol.2008.rank <- Alcohol.2008 %>%
+  mutate(rank = rank(alcohol))        # Neue Spalte "rank" mit dem Rang hinzufügen!
+```
+
+Und auf welchem Rang steht nun Deutschland?
+
+```{r}
+Alcohol.2008.rank %>% 
+  filter(country == "Germany")
+```
+
+
+Wie sieht das mit Deutschland, Österreich, Schweiz, Spanien, Griechenland und Groß-Britanien im Vergleich aus?
+
+```{r}
+Alcohol.2008.rank %>% filter(
+  country == "Germany" |
+  country == "Austria" |
+  country == "Switzerland" |
+  country == "Spain" |
+  country == "Greece" |
+  country == "United Kingdom"
+)
+```
+
+
+Wie speichert R das intern ab?
+
+```{r}
+str(Alcohol)
+```
+
+
+Und was hat R an Daten erkannt und wie?
+
+```{r}
+inspect(Alcohol)
+```
+
+
+## Vorlesung vom 09.04.2019
+
+Zuerst laden wir das Paket "mosaic":
+
+```{r}
+library(mosaic)
+```
+
+Und dann laden wir die "tipping" Daten:
+
+```{r}
+download.file("https://goo.gl/whKjnl", destfile = "tips.csv")
+```
+Danach laden wir den Datensatz in den Speicher unter dem Namen "tips"!
+
+```{r}
+tips <- read.csv2("tips.csv")
+```
+
+Wir müssen noch gridExtra laden:
+
+```{r}
+library(gridExtra)
+```
+
+Ein Blick auf die Daten im Datensatz "tips":
+
+```{r}
+str(tips)
+```
+
+
+Ein erstes Diagramm in R:
+
+```{r}
+plot1 <- gf_bar( ~ sex, data=tips)
+plot2 <- gf_barh( ~ sex, data=tips)
+grid.arrange(plot1, plot2, nrow=1)
+```
+
+
+```{r}
+prop( ~ sex, # prop liefter den Anteilswert
+      success = "Female", # success = "Female" bedeuten nur der Frauen!
+      data=tips) # Daten aus dem Datensatz tips
+```
+
+Die *absolute* Häufigkeit:
+
+```{r}
+tally( ~ sex, data=tips)
+```
+
+Die *relative* Häufigkeit:
+
+```{r}
+tally( ~ sex,
+       format = "proportion",
+       data=tips)
+```
+
+Wenn wir wissen wollen, ob das Verhalten sowohl bei Lunch als auch bei Dinner das selbe ist, dann müssen wir die Daten "gruppieren":
+
+```{r}
+gf_bar( ~ sex | time,
+        data=tips)
+```
+
+
+Wie sehen die Zahlen aus?
+
+Die *absoluten* Häufigkeiten:
+
+```{r}
+tally( ~ sex | time, data=tips)
+```
+
+Die *relativen* Häufigkeiten:
+
+```{r}
+tally( ~ sex | time, format="proportion", data=tips)
+```
+
+Raucher je Wochentag;
+Lösung A:
+
+```{r}
+tally( ~ smoker | day, format = "proportion", data=tips)
+```
+
+Lösung B
+```{r}
+tally( ~ day | smoker, format = "proportion", data=tips)
+```
+
+
+### Übung 31
+
+```{r}
+gf_histogram( ~ tip, bins= 10, data=tips)
+```
+
+
+
+
+
+## Vorlesung vom 23.04.2019
+
+### Offene Übung 54
+
+Mosaic noch einmal laden und  
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+```{r}
+gf_histogram( ~ total_bill | smoker, data=tips) 
+gf_boxplot( total_bill ~ smoker, data=tips)
+favstats( total_bill ~ smoker , data=tips)
+```
+
+
+
+### Offene Übung 55
+
+```{r}
+gf_point(tip ~ total_bill | smoker, data=tips)
+tips %>% 
+    group_by(smoker) %>%
+    summarise(cor(tip ~ total_bill))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+Übung 65
+
+
+```{r}
+xpnorm(75, mean=60, sd=10) # Gabi
+xpnorm(275, mean=250, sd=25) # Klaus
+```
+
+
+## Der Münzwurf als Simulation
+
+```{r}
+set.seed(2009)
+
+muenzvrtlg <- do(100) * rflip(n=10)
+gf_bar( ~ heads, data=muenzvrtlg) %>%
+  gf_labs(title = "Simulierter Münzwurf von n=10 Münzen mit 100 Wiederholungen")
+muenzvrtlg <- do(1000) * rflip(n=10)
+gf_bar( ~ heads, data=muenzvrtlg)  %>%
+  gf_labs(title = "Simulierter Münzwurf von n=10 Münzen mit 1.000 Wiederholungen")
+muenzvrtlg <- do(10000) * rflip(n=10)
+gf_bar( ~ heads, data=muenzvrtlg) %>%
+  gf_labs(title = "Simulierter Münzwurf von n=10 Münzen mit 10.000 Wiederholungen")
+
+``` 
+
+
+## Vorlesung vom 06.05.2019
+
+Wir laden am Anfang das Paket mosaic und die Tipping-Daten:
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+Frauenanteil der Rechnungszahler*innen:
+
+Kennzahlen:
+```{r}
+tally( ~ sex, format="proportion", data=tips)
+```
+
+Graphische Darstellung:
+```{r}
+gf_percents( ~ sex, data=tips)
+```
+
+Wir simulieren nun die Nullverteilung, also die Verteilung die dadurch entsteht, dass wir die $H_0$ als WAHR annehmen:
+
+```{r}
+set.seed(2009) # Zufallszahlengenerator auf einen Startwert setzen!
+
+Nullvtlg <- do(10000+0) *
+  rflip(n= nrow(tips))
+
+gf_histogram( ~  prop, data=Nullvtlg)
+```
+
+
+Wie berechnen wir nun den Anteilswert / p-Wert?
+
+```{r}
+propdach <- prop( ~ sex, data=tips, success = "Female")
+propdach
+```
+
+Quantile für extreme Werte in der Verteilung unter der $H_0: \pi = 0.5$ also bei 50%:
+
+```{r}
+quantile( ~ prop, data=Nullvtlg, probs=c(0.025, 0.975))
+```
+
+Da der Wert `r propdach` nicht im Intervall von `r quantile( ~ prop, data=Nullvtlg, probs=c(0.025, 0.975))` liegt, ist es **kein** üblicher Wert. (Die $H_0$ wackelt!)
+
+Im klassischen Test sieht das wie folgt aus:
+
+```{r}
+binom.test( ~ sex, # Variablbe die wir untersuchen wollen.
+            p = 0.5, # hypothetische Wert der p_0 also der 50% Frauenanteil
+            success = "Female", # Welcher Anteil soll bestimmt werden? 
+            alternative = "two.sided", # ein UNGERICHTETER Test!!
+            data=tips
+            )
+```
+
+
+## Bootstrap-Verteilung für den Rechnungsmittelwert
+
+
+```{r}
+Bootvltg <- do(10000) *
+  mean( ~ total_bill, data=resample(tips))
+gf_histogram( ~ mean, data=Bootvltg)
+```
+Das 95%-Bootstrap-KI:
+```{r}
+quantile( ~ mean, probs=c(0.025, 0.975), data=Bootvltg)
+```
+
+## Vorlesung vom 07.05.2019
+
+Wir laden am Anfang das Paket mosaic und die Tipping-Daten:
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+Der t-Test für die Nullhypothese: "H_0: \pi \leq 15:
+
+```{r}
+t.test(
+  ~ total_bill,
+  mu=15,
+  alternative="greater",
+  data=tips
+)
+```
+
+## Übung 95
+
+Der t-Test für die Nullhypothese: "H_0: \pi \leq 19.5$ vs. $H_A: \mu > 19.5$:
+
+```{r}
+t.test(
+  ~ total_bill,
+  mu=19.5,
+  alternative="greater",
+  data=tips
+)
+```
+
+
+
+
+```{r}
+set.seed(2009)
+Nullvtlg <- do(10000)*
+            diffprop(sex ~ shuffle(time), success="Female", data=tips)
+```
+
+
+```{r}
+diff.stipro <- diffprop(sex ~ time, success="Female", data=tips)
+gf_histogram(~ diffprop, data=Nullvtlg) %>%
+  gf_vline(xintercept = diff.stipro)
+```
+
+
+```{r}
+prop( ~ abs(diffprop) >= abs(diff.stipro), data=Nullvtlg)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
