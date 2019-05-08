@@ -2,5 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-Erste_Schritte_in_R.docx
+Erste_Schritte_in_R*.docx
 tips.csv
+Erste_Schritte_in_R*.tex
+Erste_Schritte_in_R*.log
+
