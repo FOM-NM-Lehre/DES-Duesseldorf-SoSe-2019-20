@@ -366,6 +366,9 @@ Das 95%-Bootstrap-KI:
 quantile( ~ mean, probs=c(0.025, 0.975), data=Bootvltg)
 ```
 
+## Vorlesung vom 07.05.2019
+
+<<<<<<< HEAD:Erste_Schritte_in_R-DOZENTENFASSUNG.Rmd
 ## Vorlesung vom 07.05.2019 (Teil 1)
 
 Wir laden am Anfang das Paket mosaic und die Tipping-Daten:
@@ -374,8 +377,15 @@ library(mosaic)
 tips <- read.csv2("tips.csv")
 ```
 
+Der t-Test für die Nullhypothese: $H_0: \pi \leq 15:
+=======
+Wir laden am Anfang das Paket mosaic und die Tipping-Daten:
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
 
-Der t-Test für die Nullhypothese: $H_0: \pi \leq 15$:
+Der t-Test für die Nullhypothese: "H_0: \pi \leq 15:
 
 ```{r}
 t.test(
@@ -388,7 +398,39 @@ t.test(
 
 ## Übung 95
 
+Der t-Test für die Nullhypothese: "H_0: \pi \leq 19.5$ vs. $H_A: \mu > 19.5$:
+
+```{r}
+t.test(
+  ~ total_bill,
+  mu=19.5,
+  alternative="greater",
+  data=tips
+)
+```
+>>>>>>> d51f43dedbfd0c8b3330f9574144ab2218e3cc93:Erste Schritte in R-DOZENTENFASSUNG.Rmd
+
+```{r}
+t.test(
+  ~ total_bill,
+  mu=15,
+  alternative="greater",
+  data=tips
+)
+```
+
+
+## Übung 95
+
+<<<<<<< HEAD:Erste_Schritte_in_R-DOZENTENFASSUNG.Rmd
 Der t-Test für die Nullhypothese: $H_0: \pi \leq 19.5$ vs. $H_A: \mu > 19.5$:
+=======
+```{r}
+set.seed(2009)
+Nullvtlg <- do(10000)*
+            diffprop(sex ~ shuffle(time), success="Female", data=tips)
+```
+>>>>>>> d51f43dedbfd0c8b3330f9574144ab2218e3cc93:Erste Schritte in R-DOZENTENFASSUNG.Rmd
 
 ```{r}
 t.test(
@@ -399,6 +441,16 @@ t.test(
 )
 ```
 
+```{r}
+diff.stipro <- diffprop(sex ~ time, success="Female", data=tips)
+gf_histogram(~ diffprop, data=Nullvtlg) %>%
+  gf_vline(xintercept = diff.stipro)
+```
+
+
+```{r}
+prop( ~ abs(diffprop) >= abs(diff.stipro), data=Nullvtlg)
+```
 
 
 ```{r}
@@ -425,21 +477,6 @@ prop( ~ abs(diffprop) >= abs(diff.stipro), data=Nullvtlg)
 ```{r}
 cor(tip ~ total_bill, data=tips)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
