@@ -427,20 +427,92 @@ cor(tip ~ total_bill, data=tips)
 ```
 
 
+## Vorlesung vom 21.5.2019
+
+Zuerst laden wir die Tipping-Daten und laden Mosaic:
+```{r}
+library(mosaic)
+tips <- read.csv2("tips.csv")
+```
+
+## Offene Übung 138:
+
+Wir sollen die Rechnungshöhe als Funktion der Anzahl Personen sowie der Tageszeit modellieren:
+
+$$total\_bill_i = \beta_0 + \beta_1 * size_i + \beta_2 \cdot timeLunch_i + \epsilon_i$$
+
+Dazu erstellen wir das folgende lineare Modell in R:
+
+```{r}
+erglmUeb <- lm(total_bill ~ size + time, data=tips)
+summary(erglmUeb)
+```
+
+Mit den Werten aus der linearen Regression ergibt sich dann:
+
+$$total\_bill_i = 6.3766 + 5.4817 \cdot size_i - 2.4284 \cdot timeLunch_i + \epsilon_i$$
+
+Das Modell lässt sich wie folgt darstellen:
+
+```{r}
+plotModel(erglmUeb)
+```
+
+
+```{r}
+set.seed(2009)
+Bootvtlg <- do(10000) * lm(total_bill ~ size + time, data = resample(tips))
+confint(Bootvtlg)
+```
+
+
+##
+
+```{r}
+erglmIdee <- lm(tip ~ total_bill *  smoker, data=tips)
+summary(erglmIdee)
+```
+
+```{r}
+predict(erglmIdee, newdata=data.frame(total_bill = 50, smoker="No"), interval="prediction")
+```
 
 
 
 
+## Übung 139
+
+```{r}
+(TRUE | FALSE) & (FALSE)
+```
+
+
+## Offene Übung 141
+
+```{r}
+tips %>%
+  filter(time == "Dinner" & smoker == "Yes") %>%
+  select(tip) %>%
+  inspect()
+```
 
 
 
 
+## Übung 142
 
+```{r}
+tips %>%
+  mutate(rel_tip = tip / total_bill) %>%
+  filter(rel_tip > 0.1) %>%
+  nrow()
+```
 
+```{r}
+tips %>%
+  mutate(rel_tip_good = (tip / total_bill) > 0.1) %>%
+  filter(rel_tip_good == TRUE) %>%
+  nrow()
 
-
-
-
-
-
+```
 
